@@ -13,9 +13,10 @@ import { useNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
 import { useGlobalState } from "~~/services/store/store";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
+import { SessionProvider } from 'next-auth/react';
 import "~~/styles/globals.css";
 
-const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
+const ScaffoldEthApp = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
   const price = useNativeCurrencyPrice();
   const setNativeCurrencyPrice = useGlobalState(state => state.setNativeCurrencyPrice);
   // This variable is required for initial client side rendering of correct theme for RainbowKit
@@ -43,7 +44,9 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
         <div className="flex flex-col min-h-screen text-primary-content font-space-grotesk">
           <Header />
           <main className="relative flex flex-col flex-1">
-            <Component {...pageProps} />
+            <SessionProvider session={session}>
+              <Component {...pageProps} />
+            </SessionProvider>
           </main>
           <Footer />
         </div>

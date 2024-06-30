@@ -32,3 +32,15 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+.MuiButtonBase-root {
+  color: black !important;
+}
+.MuiDataGrid-columnHeaders > div,
+.MuiDataGrid-toolbarContainer {
+  background: rgba(255, 255, 255, .5) !important;
+}
+
+.MuiDataGrid-toolbarContainer {
+  border-bottom: 1px solid wheat;
+}
