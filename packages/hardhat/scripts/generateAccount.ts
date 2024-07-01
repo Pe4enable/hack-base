@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { parse, stringify } from "envfile";
 import * as fs from "fs";
+import generateTsAbis from "../deploy/99_generateTsAbis";
 
 const envFilePath = "./.env";
 
@@ -9,6 +10,10 @@ const envFilePath = "./.env";
  * @param existingEnvConfig
  */
 const setNewEnvConfig = (existingEnvConfig = {}) => {
+
+  // @ts-ignore
+  // generateTsAbis({});
+
   console.log("👛 Generating new Wallet");
   const randomWallet = ethers.Wallet.createRandom();
 
