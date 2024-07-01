@@ -8,7 +8,11 @@ On Base Mainnet [0x22aF1E744e0CBC26638b3f48A23Cb02104e689e1](https://basescan.or
 
 ## Video
 
+[Demo](https://youtu.be/3gjXmWmkUxc)
+
 ## Demo
+
+[Demo](https://hack-db.donft.io)
 
 ## Dev info
 
