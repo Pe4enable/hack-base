@@ -32,12 +32,12 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   });
 
   // Verifying deployed contract
-  console.log("Verifying contracts...");
-  const yourContract = await hre.ethers.getContract("YourCollectible", deployer);
-  await hre.run("verify:verify", {
-    address: yourContract.address,
-    constructorArguments: [],
-  });
+  // console.log("Verifying contracts...");
+  // const yourContract = await hre.ethers.getContract("YourCollectible", deployer);
+  // await hre.run("verify:verify", {
+  //   address: yourContract.address,
+  //   constructorArguments: [],
+  // });
 };
 
 export default deployYourContract;

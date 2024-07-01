@@ -17,7 +17,7 @@ contract YourCollectible is
 
 	Counters.Counter public tokenIdCounter;
 
-	constructor() ERC721("YourCollectible", "YCB") {}
+	constructor() ERC721("GitSBT", "GBT") {}
 
 	function _baseURI() internal pure override returns (string memory) {
 		return "https://ipfs.io/ipfs/";
