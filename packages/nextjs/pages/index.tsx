@@ -1,5 +1,8 @@
+import React from "react";
+import Link from "next/link";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbar } from "@mui/x-data-grid";
 import type { NextPage } from "next";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { sampleTableData } from "~~/utils/samples/tableData";
 
@@ -26,12 +29,16 @@ const Home: NextPage = () => {
     {
       field: "more",
       headerName: "More",
-      flex: 0.5,
+      flex: 0.2,
       renderCell: cell => {
         return (
-          <a href={cell.value} target="_blank" rel="noreferrer" className="underline underline-offset-2">
-            More...
-          </a>
+          <Link
+            href={`projects/${cell.id}`}
+            passHref
+            className={`hover:!text-neutral focus:!bg-secondary active:!text-neutral text-sm rounded-full inline-flex justify-center align-middle w-[30px] h-[30px] pt-1`}
+          >
+            <InformationCircleIcon className="h-5 w-5" />
+          </Link>
         );
       },
     },
