@@ -31,7 +31,8 @@ const ProjectPage = ({ project }: PageProps) => {
       <MetaHeader />
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5 w-[90%]">
-          <h1 className="mb-6 text-3xl font-bold">{project.title}</h1>
+          <h1 className="mb-3 text-3xl font-bold">{project.title}</h1>
+          <div className="mb-10">{project.hackathon}</div>
           <div className="mb-10">{project.short}</div>
           <div className="mb-12 flex gap-2">
             {project.repo && (
