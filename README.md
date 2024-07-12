@@ -12,7 +12,14 @@ On Base Mainnet [0x22aF1E744e0CBC26638b3f48A23Cb02104e689e1](https://basescan.or
 
 ## Demo
 
-[Demo](https://hack-db.donft.io)
+[Demo](https://hack-db.vercel.app)
+
+## Conacts
+
+Tg: [@tacid](https://t.me/tacid)
+Tw: [@pe4enable](https://x.com/pe4enable)
+Wp: [@pe](https://warpcast.com/pe)
+Lens: @pe4en.lens
 
 ## Dev info
 
