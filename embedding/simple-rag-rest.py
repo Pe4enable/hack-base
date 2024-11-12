@@ -1,42 +1,76 @@
-from flask import Flask, request, jsonify
-from llama_index.core.readers import SimpleDirectoryReader
-from llama_index.llms.openai import OpenAI
-from llama_index.embeddings.openai import OpenAIEmbedding
-from llama_index.vector_stores.faiss import FaissVectorStore
-from llama_index.core.ingestion import IngestionPipeline
+# rest_service.py
 
 import os
+import faiss
+import pickle
+from llama_index.core import Settings
+from llama_index.llms.openai import OpenAI
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.core import VectorStoreIndex
+from llama_index.vector_stores.faiss import FaissVectorStore
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List, Dict
+import numpy as np
 
-# Инициализация Flask приложения
-app = Flask(__name__)
+# Initialize FastAPI app
+app = FastAPI()
 
-# Задаем API-ключ (лучше хранить его в переменной окружения для безопасности)
-API_KEY = os.getenv("API_KEY", "your_api_key_here")
+# Load environment variables from a .env file
+load_dotenv()
+EMBED_DIMENSION = 512
+Settings.llm = OpenAI(model="gpt-3.5-turbo")
+Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small", dimensions=EMBED_DIMENSION)
 
-# Функция для проверки API-ключа
-def check_api_key():
-    key = request.headers.get("x-api-key")
-    return key == API_KEY
+# Paths
+EMBEDDINGS_PATH = 'vectore_store/embeddings_data.pkl'
+FAISS_INDEX_PATH = 'vectore_store/faiss_index.faiss'
 
-# Инициализация моделей и хранилищ (настраиваем ваши компоненты Llama Index)
-llm = OpenAI(api_key="openai_api_key")
-embedding = OpenAIEmbedding(api_key="openai_api_key")
-vector_store = FaissVectorStore(embedding=embedding)
+# Load embeddings and faiss index
+def load_embeddings():
+    with open(EMBEDDINGS_PATH, 'rb') as f:
+        nodes = pickle.load(f)
+    faiss_index = faiss.read_index(FAISS_INDEX_PATH)
+    return faiss_index, nodes
 
-# Эндпоинт для обработки вопросов
-@app.route('/ask', methods=['POST'])
-def ask_question():
-    if not check_api_key():
-        return jsonify({"error": "Unauthorized"}), 401
+faiss_index, nodes = load_embeddings()
+vector_store = FaissVectorStore(faiss_index=faiss_index)
+vector_store_index = VectorStoreIndex(nodes)
 
-    data = request.json
-    question = data.get("question")
+# Создаём движок для запросов
+query_engine = vector_store_index.as_query_engine(similarity_top_k=2)
+
+# Request model
+class QueryRequest(BaseModel):
+    idea: str
+
+# Function to find the most similar text in loaded embeddings
+def find_most_similar_text(query_embedding):
+    # Поиск ближайшего соседа в Faiss индексе
+    distances, indices = faiss_index.search(np.array([query_embedding]).astype('float32'), 1)
+    closest_index = indices[0][0]
     
-    # Здесь может быть вызов вашего кода для обработки запроса и получения ответа
-    response = llm.answer(question)  # Примерный вызов для получения ответа от LLM
-    
-    return jsonify({"answer": response})
+    # Возвращаем наиболее подходящий текст из сохранённых узлов
+    closest_text = nodes[closest_index].text  # Предполагается, что 'text' содержит текст строки
+    return closest_text
 
-# Запуск Flask-приложения
-if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+# Endpoint to process the query and return the most similar text
+@app.post("/similar")
+async def ask_question(request: QueryRequest):
+    question = request.idea
+    
+    # Получаем эмбеддинг запроса
+    query_embedding = OpenAIEmbedding(model="text-embedding-3-small", dimensions=512).get_text_embedding(question)
+    response = query_engine.query(question)
+    
+    # Находим наиболее похожий текст
+    closest_text = find_most_similar_text(query_embedding)
+    
+    # Формируем ответ с текстом
+    answer = {
+        "answer": response.response,
+        "csv_data": closest_text
+    }
+
+    return answer

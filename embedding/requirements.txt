@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+faiss-cpu
+llama-index
+openai
+python-dotenv
+llama-index-vector-stores-faiss

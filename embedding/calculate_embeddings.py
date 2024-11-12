@@ -23,8 +23,9 @@ Settings.llm = OpenAI(model="gpt-3.5-turbo")
 Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small", dimensions=EMBED_DIMENSION)
 
 # Путь для сохранения эмбеддингов
-EMBEDDINGS_PATH = 'embeddings_data.pkl'
-FAISS_INDEX_PATH = 'faiss_index.faiss'
+EMBEDDINGS_PATH = 'vector_store/embeddings_data.pkl'
+FAISS_INDEX_PATH = 'vector_store/faiss_index.faiss'
+CSV_FILE = 'data/first_30_rows.csv'
 
 # Функция для сохранения эмбеддингов
 def save_embeddings(faiss_index, nodes):
@@ -35,7 +36,7 @@ def save_embeddings(faiss_index, nodes):
 # Читаем CSV
 csv_reader = PagedCSVReader()
 reader = SimpleDirectoryReader(
-    input_files=['first_30_rows.csv'],
+    input_files=[CSV_FILE],
     file_extractor={".csv": csv_reader}
 )
 

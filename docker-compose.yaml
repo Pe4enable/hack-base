@@ -1,0 +1,13 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  find_similar:
+    build:
+      context: .
+      dockerfile: embedding/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - /root/hack-base/embedding:/app
