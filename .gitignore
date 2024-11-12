@@ -1,3 +1,9 @@
+*.pkl
+*.faiss
+*.pyc
+*__pycache__*
+*.csv
+
 # Logs
 logs
 *.log
