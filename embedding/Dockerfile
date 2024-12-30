@@ -18,4 +18,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8000
 
 # Команда для запуска приложения
-CMD ["uvicorn", "simple-rag-rest:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "rag_rest:app", "--host", "0.0.0.0", "--port", "8000"]
