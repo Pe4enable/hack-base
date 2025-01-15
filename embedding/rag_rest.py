@@ -41,6 +41,10 @@ emb_service = EmbeddingService(FAISS_INDEX_PATH, EMBEDDINGS_PATH)
 def read_root():
     return {"Hello": "World"}
 
+@app.get("/healthcheck")
+def read_root():
+    return {"HackDB": "v.0.0.1"}
+
 
 @app.post("/similar")
 async def ask_question(request: QueryRequest):

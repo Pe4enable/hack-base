@@ -5,7 +5,7 @@ version: '3.8'
 services:
   find_similar:
     build:
-      context: .
+      context: ./embedding
       dockerfile: embedding/Dockerfile
     ports:
       - "8000:8000"

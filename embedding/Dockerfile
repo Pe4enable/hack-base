@@ -5,7 +5,7 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Копируем остальные файлы приложения
-COPY ./embedding /app
+COPY . /app
 
 RUN ls -la /app/
 
