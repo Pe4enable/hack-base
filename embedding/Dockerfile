@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 
 # Открываем порт, на котором работает FastAPI (по умолчанию 8000)
-EXPOSE 8000
+EXPOSE 8080
 
 # Команда для запуска приложения
-CMD ["uvicorn", "rag_rest:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "rag_rest:app", "--host", "0.0.0.0", "--port", "8080"]
