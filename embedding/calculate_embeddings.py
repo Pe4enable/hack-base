@@ -60,6 +60,7 @@ pipeline = IngestionPipeline(
 
 # Прогоняем pipeline и получаем векторы
 nodes = pipeline.run()
+pipeline.persist("./pipeline_storage")
 
 # Сохраняем эмбеддинги и FAISS индекс
 save_embeddings(faiss_index, nodes)
