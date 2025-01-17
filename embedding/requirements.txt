@@ -5,3 +5,5 @@ llama-index
 openai
 python-dotenv
 llama-index-vector-stores-faiss
+boto3
+psycopg2

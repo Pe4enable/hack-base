@@ -69,7 +69,12 @@ class EmbeddingService:
 
         # Возвращаем наиболее подходящий текст из сохранённых узлов
         closest_text = self.nodes[closest_index].text  # Предполагается, что 'text' содержит текст строки
+
+        #todo возвращать список похожих проектов, а не только первый. в идел просто список id, вынести процент в env
+
         return closest_text
+        
+        
 
     def _update(self):
         self.nodes = list(self.pipeline.docstore.docs.values())
