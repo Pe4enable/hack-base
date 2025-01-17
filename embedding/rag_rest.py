@@ -6,6 +6,7 @@ import boto3
 import json
 import numpy as np
 import psycopg2
+import uuid
 import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -36,7 +37,7 @@ class BodyInsertIntoIndex(BaseModel):
     row: dict
 
 class DataItem(BaseModel):
-    id: str
+    id: uuid.UUID
     hackathon: str
     title: str
     source_link:str
@@ -69,6 +70,7 @@ def init_client():
 
 client = init_client()
 
+@app.get("/api/do/download")
 # Метод для скачивания файла из Spaces Object Storage Digital Ocean
 def download_file_from_spaces():
     try:
@@ -84,7 +86,9 @@ def download_file_from_spaces():
 
 emb_service = EmbeddingService(FAISS_INDEX_PATH, EMBEDDINGS_PATH)
 
+@app.get("/api/do/upload")
 # Метод для обновления файла в Spaces Object Storage Digital Ocean
+#todo пока ошибка
 def upload_file_to_spaces():
     try:
         # Загружаем файл
@@ -137,10 +141,11 @@ def get_submissions_by_ids(ids: List[str]):
     except Exception as e:
         raise RuntimeError(f"Ошибка при get_submissions_by_ids : {e}")
 
+#todo пока ошибка
 def add_submission(item: DataItem):
     try:
         cursor = init_db()
-        cursor.execute(f"INSERT public.\"Submissions\" ( \
+        cursor.execute(f"INSERT INTO public.\"Submissions\" ( \
                        hackathon, \
                        title, \
                        source_link, \
@@ -151,16 +156,16 @@ def add_submission(item: DataItem):
                        short_desc, \
                        description, \
                        merged_column) VALUES( \
-                       {item.hackathon}, \
-                       {item.title}, \
-                       {item.source_link}, \
-                       {item.live_demo_link}, \
-                       {item.source_code_link}, \
-                       {item.video_link}, \
-                       {item.winner}, \
-                       {item.short_desc}, \
-                       {item.description}, \
-                       {item.merged_column}, \
+                       \"{item.hackathon}\", \
+                       \"{item.title}\", \
+                       \"{item.source_link}\", \
+                       \"{item.live_demo_link}\", \
+                       \"{item.source_code_link}\", \
+                       \"{item.video_link}\", \
+                       \"{item.winner}\", \
+                       \"{item.short_desc}\", \
+                       \"{item.description}\", \
+                       \"{item.merged_column}\" \
                        )")
 
         commit_changes()
@@ -224,9 +229,9 @@ async def insert_into_index(new_doc: BodyInsertIntoIndex):
 async def add_data(data_list: DataList):
     for item in data_list.data:
         # Преобразуем каждый элемент в строку
-        item_str = f"id: {item.id}, hackathon: {item.hackathon}, title: {item.title}, link: {item.link}, " \
-                   f"live_demo: {item.live_demo}, source_code: {item.source_code}, video: {item.video}, " \
-                   f"winner: {item.winner}, short: {item.short}, merged_column: {item.merged_column}"
+        item_str = f"id: {item.id}, hackathon: {item.hackathon}, title: {item.title}, source_link: {item.source_link}, " \
+                   f"live_demo_link: {item.live_demo_link}, source_code_link: {item.source_code_link}, video_link: {item.video_link}, " \
+                   f"winner: {item.winner}, short_desc: {item.short_desc}, description: {item.description}, merged_column: {item.merged_column}"
         
         add_submission(item)
         # Вызываем метод insert_new_doc
