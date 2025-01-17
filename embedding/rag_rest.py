@@ -98,13 +98,18 @@ def upload_file_to_spaces():
         raise RuntimeError(f"Ошибка при загрузке файла: {e}")
 
 #todo выделить в отдельный файл
-conn = psycopg2.connect()
+conn = psycopg2.connect(database=os.getenv("POSTGRESQL_DB_NAME"),
+                        host=os.getenv("POSTGRESQL_HOST"),
+                        user=os.getenv("POSTGRESQL_USER"),
+                        password=os.getenv("POSTGRESQL_PASSWORD"),
+                        port=os.getenv("POSTGRESQL_PORT"))
+
 def init_db():
-    conn = psycopg2.connect(database=os.getenv(""),
-                        host=os.getenv(""),
-                        user=os.getenv(""),
-                        password=os.getenv(""),
-                        port=os.getenv(""))
+    conn = psycopg2.connect(database=os.getenv("POSTGRESQL_DB_NAME"),
+                        host=os.getenv("POSTGRESQL_HOST"),
+                        user=os.getenv("POSTGRESQL_USER"),
+                        password=os.getenv("POSTGRESQL_PASSWORD"),
+                        port=os.getenv("POSTGRESQL_PORT"))
     
     return conn.cursor()
     
@@ -135,27 +140,27 @@ def get_submissions_by_ids(ids: List[str]):
 def add_submission(item: DataItem):
     try:
         cursor = init_db()
-        cursor.execute(f"INSERT public.\"Submissions\" (
-                       hackathon, 
-                       title, 
-                       source_link, 
-                       live_demo_link, 
-                       source_code_link, 
-                       video_link, 
-                       winner, 
-                       short_desc, 
-                       description, 
-                       merged_column) VALUES(
-                       {item.hackathon}, 
-                       {item.title}, 
-                       {item.source_link}, 
-                       {item.live_demo_link}, 
-                       {item.source_code_link}, 
-                       {item.video_link}, 
-                       {item.winner}, 
-                       {item.short_desc}, 
-                       {item.description}, 
-                       {item.merged_column},
+        cursor.execute(f"INSERT public.\"Submissions\" ( \
+                       hackathon, \
+                       title, \
+                       source_link, \
+                       live_demo_link, \
+                       source_code_link,  \
+                       video_link, \
+                       winner, \
+                       short_desc, \
+                       description, \
+                       merged_column) VALUES( \
+                       {item.hackathon}, \
+                       {item.title}, \
+                       {item.source_link}, \
+                       {item.live_demo_link}, \
+                       {item.source_code_link}, \
+                       {item.video_link}, \
+                       {item.winner}, \
+                       {item.short_desc}, \
+                       {item.description}, \
+                       {item.merged_column}, \
                        )")
 
         commit_changes()
