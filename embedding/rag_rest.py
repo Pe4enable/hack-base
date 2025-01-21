@@ -27,6 +27,7 @@ EMBED_DIMENSION = 512
 Settings.llm = OpenAI(model="gpt-3.5-turbo")
 Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small", dimensions=EMBED_DIMENSION)
 
+NUMBER_OF_RETURNED_DOCUMENTS = os.getenv('NUMBER_OF_RETURNED_DOCUMENTS')
 
 # Request model
 class QueryRequest(BaseModel):
@@ -84,7 +85,7 @@ def download_file_from_spaces():
     except Exception as e:
         raise RuntimeError(f"Ошибка при скачивании файлов: {e}")
 
-emb_service = EmbeddingService(FAISS_INDEX_PATH, EMBEDDINGS_PATH)
+emb_service = EmbeddingService(FAISS_INDEX_PATH, EMBEDDINGS_PATH, NUMBER_OF_RETURNED_DOCUMENTS)
 
 @app.get("/api/do/upload")
 # Метод для обновления файла в Spaces Object Storage Digital Ocean

@@ -11,7 +11,8 @@ from llama_index.vector_stores.faiss import FaissVectorStore
 
 
 class EmbeddingService:
-    def __init__(self, faiss_index_path, embeddings_path):
+    def __init__(self, faiss_index_path, embeddings_path, number_of_returned_documents):
+        self._number_of_returned_documents = number_of_returned_documents
         self.faiss_index_path = faiss_index_path
         self.embeddings_path = embeddings_path
         self.faiss_index, self.nodes = self.load_embeddings()
@@ -64,17 +65,14 @@ class EmbeddingService:
 
     def find_most_similar_text(self, query_embedding):
         # Поиск ближайшего соседа в Faiss индексе
-        distances, indices = self.faiss_index.search(np.array([query_embedding]).astype('float32'), 1)
-        closest_index = indices[0][0]
+        distances, indices = self.faiss_index.search(np.array([query_embedding]).astype('float32'),
+                                                     self._number_of_returned_documents)
+        closest_indices = indices[0]
 
-        # Возвращаем наиболее подходящий текст из сохранённых узлов
-        closest_text = self.nodes[closest_index].text  # Предполагается, что 'text' содержит текст строки
+        # Возвращаем список текстов, соответствующих найденным индексам
+        closest_texts = [self.nodes[idx].text for idx in closest_indices]
 
-        #todo возвращать список похожих проектов, а не только первый. в идел просто список id, вынести процент в env
-
-        return closest_text
-        
-        
+        return closest_texts
 
     def _update(self):
         self.nodes = list(self.pipeline.docstore.docs.values())
